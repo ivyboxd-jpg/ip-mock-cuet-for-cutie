@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IP Quest - Aaradhya</title>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Instrument+Serif&family=Inter:wght@400;700;900&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #F7F2EB; color: #081F5C; }
+        .font-serif { font-family: 'Instrument Serif', serif; }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        // DESIGN SYSTEM
+        const COLORS = {
+            midnight: '#081F5C', 
+            royal: '#334EAC',    
+            moon: '#F7F2EB',      
+            porcelain: '#EDF1F6', 
+            dawn: '#D0E3FF',
+            pear: '#F2F0DE'
+        };
+
+        const App = () => {
+            const [view, setView] = useState('login'); // login, dashboard, quest, results
+            const [password, setPassword] = useState('');
+            const [selectedChapter, setSelectedChapter] = useState(null);
+
+            // Icon Component Helper
+            const Icon = ({ name, size = 24, className = "" }) => {
+                useEffect(() => { lucide.createIcons(); }, [view]);
+                return <i data-lucide={name} className={className} style={{ width: size, height: size }}></i>;
+            };
+
+            // 1. LOGIN VIEW
+            if (view === 'login') {
+                return (
+                    <div className="min-h-screen flex items-center justify-center p-6">
+                        <div className="w-full max-w-sm bg-white p-8 rounded-[3rem] shadow-2xl text-center">
+                            <div className="w-20 h-20 rounded-3xl flex items-center justify-center mx-auto mb-8 text-white shadow-lg" style={{backgroundColor: COLORS.royal}}>
+                                <Icon name="lock" size={32} />
+                            </div>
+                            <h2 className="text-3xl font-serif mb-2">Welcome Back</h2>
+                            <p className="text-sm opacity-50 mb-8">Enter your password to sync progress</p>
+                            <input 
+                                type="password" 
+                                placeholder="••••••••" 
+                                className="w-full border-none rounded-2xl p-5 mb-4 text-center text-xl outline-none shadow-inner" 
+                                style={{backgroundColor: COLORS.porcelain}}
+                                onChange={(e) => setPassword(e.target.value)}
+                            />
+                            <button 
+                                onClick={() => setView('dashboard')}
+                                className="w-full text-white py-5 rounded-2xl font-bold flex items-center justify-center gap-3 active:scale-95 transition-all shadow-lg" 
+                                style={{backgroundColor: COLORS.midnight}}
+                            >
+                                Unlock <Icon name="chevron-right" size={20} />
+                            </button>
+                        </div>
+                    </div>
+                );
+            }
+
+            // 2. DASHBOARD VIEW
+            if (view === 'dashboard') {
+                return (
+                    <div className="min-h-screen p-6 max-w-md mx-auto">
+                        <header className="flex justify-between items-center mt-4 mb-10">
+                            <div>
+                                <p className="text-[10px] font-black opacity-40 tracking-[0.2em] uppercase">Good Morning</p>
+                                <h1 className="text-4xl font-serif">Aaradhya</h1>
+                            </div>
+                            <div className="bg-white p-3 px-5 rounded-2xl shadow-sm text-center border border-white/50">
+                                <p className="text-[10px] font-black uppercase opacity-30">Lvl</p>
+                                <p className="text-2xl font-bold">3</p>
+                            </div>
+                        </header>
+
+                        <div className="grid grid-cols-2 gap-4 mb-10">
+                            <div className="p-6 rounded-[2.5rem] shadow-sm" style={{backgroundColor: COLORS.porcelain}}>
+                                <p className="text-[10px] font-black opacity-40 uppercase mb-1">Avg Accuracy</p>
+                                <p className="text-3xl font-bold">74%</p>
+                            </div>
+                            <div className="p-6 rounded-[2.5rem] shadow-sm" style={{backgroundColor: COLORS.porcelain}}>
+                                <p className="text-[10px] font-black opacity-40 uppercase mb-1">Streak</p>
+                                <p className="text-3xl font-bold">5 🔥</p>
+                            </div>
+                        </div>
+
+                        <h3 className="text-xl font-bold mb-6">Ready for your quest?</h3>
+                        <div className="space-y-4 mb-10">
+                            {[
+                                { id: 'pandas', name: 'Data Handling & Pandas', sub: 'df, matplotlib, visualization', icon: 'layout' },
+                                { id: 'sql', name: 'Database Query using SQL', sub: 'SELECT, JOIN, GROUP BY', icon: 'database' },
+                                { id: 'net', name: 'Computer Networks', sub: 'protocols, topologies, OSI', icon: 'network' }
+                            ].map((ch) => (
+                                <div 
+                                    key={ch.id} 
+                                    onClick={() => setSelectedChapter(ch.id)}
+                                    className={`p-5 rounded-[2rem] flex items-center gap-5 transition-all cursor-pointer border-2 ${selectedChapter === ch.id ? 'border-[#334EAC] shadow-md' : 'border-transparent bg-white shadow-sm'}`}
+                                    style={{backgroundColor: selectedChapter === ch.id ? COLORS.pear : 'white'}}
+                                >
+                                    <div className={`p-4 rounded-2xl ${selectedChapter === ch.id ? 'bg-[#334EAC] text-white' : 'bg-[#D0E3FF] text-[#334EAC]'}`}>
+                                        <Icon name={ch.icon} size={24} />
+                                    </div>
+                                    <div>
+                                        <p className="font-bold text-sm">{ch.name}</p>
+                                        <p className="text-[10px] opacity-50">{ch.sub}</p>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+
+                        <button 
+                            disabled={!selectedChapter}
+                            onClick={() => setView('quest')}
+                            className={`w-full py-6 rounded-[2rem] font-bold text-lg shadow-xl transition-all active:scale-95 ${!selectedChapter ? 'opacity-30 cursor-not-allowed' : 'opacity-100'}`}
+                            style={{backgroundColor: COLORS.midnight, color: 'white'}}
+                        >
+                            Begin Quest
+                        </button>
+                    </div>
+                );
+            }
+
+            // 3. QUEST VIEW (The Mock Test)
+            if (view === 'quest') {
+                return (
+                    <div className="min-h-screen p-6 max-w-md mx-auto">
+                        <div className="flex justify-between items-center mb-10 mt-4">
+                            <button onClick={() => setView('dashboard')} className="p-3 bg-white rounded-2xl shadow-sm"><Icon name="chevron-left" /></button>
+                            <div className="bg-white px-5 py-2 rounded-full font-black text-xs shadow-sm flex items-center gap-2">
+                                <Icon name="clock" size={14} /> 14:59
+                            </div>
+                        </div>
+
+                        <div className="bg-white p-10 rounded-[3rem] shadow-sm mb-8 min-h-[350px] flex flex-col justify-center relative overflow-hidden">
+                            <div className="absolute top-0 left-0 w-full h-2 bg-[#EDF1F6]">
+                                <div className="h-full bg-[#334EAC] w-1/10 transition-all"></div>
+                            </div>
+                            <p className="text-[10px] font-black uppercase text-[#334EAC] mb-4 tracking-[0.2em]">SQL • Medium</p>
+                            <h2 className="text-2xl font-serif leading-tight">Which SQL clause is used to filter groups after the GROUP BY clause?</h2>
+                        </div>
+
+                        <div className="space-y-3">
+                            {['WHERE', 'HAVING', 'ORDER BY', 'GROUP BY'].map((opt, i) => (
+                                <button 
+                                    key={i} 
+                                    onClick={() => setView('results')}
+                                    className="w-full p-6 bg-white rounded-[1.5rem] text-left font-bold border-2 border-transparent active:border-[#334EAC] shadow-sm active:shadow-inner transition-all hover:bg-[#F2F0DE]"
+                                >
+                                    {opt}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+                );
+            }
+
+            // 4. RESULTS VIEW
+            if (view === 'results') {
+                return (
+                    <div className="min-h-screen p-6 max-w-md mx-auto">
+                        <div className="text-center mt-10 mb-12">
+                            <div className="w-20 h-20 bg-yellow-400 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg text-white">
+                                <Icon name="award" size={40} />
+                            </div>
+                            <h1 className="text-4xl font-serif mb-2">Quest Complete!</h1>
+                            <p className="text-sm opacity-50 uppercase font-bold tracking-widest text-[#334EAC]">Diamond Badge Unlocked</p>
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-4 mb-8">
+                            <div className="bg-white p-8 rounded-[2.5rem] text-center shadow-sm">
+                                <p className="text-[10px] font-black opacity-30 uppercase mb-1">Correct</p>
+                                <p className="text-3xl font-bold">42/50</p>
+                            </div>
+                            <div className="bg-white p-8 rounded-[2.5rem] text-center shadow-sm">
+                                <p className="text-[10px] font-black opacity-30 uppercase mb-1">Accuracy</p>
+                                <p className="text-3xl font-bold text-green-600">84%</p>
+                            </div>
+                        </div>
+
+                        <div className="bg-[#081F5C] text-white p-8 rounded-[3rem] mb-10 relative overflow-hidden shadow-2xl">
+                            <div className="relative z-10">
+                                <div className="flex items-center gap-3 mb-4">
+                                    <Icon name="sparkles" className="text-yellow-400" size={20} />
+                                    <p className="text-[10px] font-black uppercase tracking-[0.2em] opacity-70">AI Review</p>
+                                </div>
+                                <p className="text-lg font-serif italic leading-relaxed opacity-90">
+                                    "Aaradhya, you absolutely nailed Computer Networks today - 5/5! SQL is coming along too, just watch out for GROUP BY questions, that's where you slipped. Spend 20 mins on Pandas before your next quest."
+                                </p>
+                            </div>
+                        </div>
+
+                        <div className="flex gap-4">
+                            <button onClick={() => setView('dashboard')} className="flex-1 bg-white border-2 border-[#081F5C] text-[#081F5C] py-6 rounded-[2rem] font-bold shadow-lg active:scale-95 transition-all">Home</button>
+                            <button onClick={() => setView('quest')} className="flex-1 bg-[#081F5C] text-white py-6 rounded-[2rem] font-bold shadow-lg active:scale-95 transition-all">New Quest</button>
+                        </div>
+                    </div>
+                );
+            }
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
